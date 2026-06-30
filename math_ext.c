@@ -19,8 +19,21 @@ static int l_add_numbers(lua_State *L) {
     return 1; 
 }
 
-// Register the function
+// 1. Create an array of all the functions you want to export
+static const struct luaL_Reg math_ext_funcs[] = {
+    {"add_in_c", l_add_numbers},
+    {NULL, NULL} // Sentinel value to tell Lua where the array ends
+};
+
+// 2. Modify the entry point to create and return a table
 int luaopen_math_ext(lua_State *L) {
-    lua_register(L, "add_in_c", l_add_numbers);
-    return 0;
+    // luaL_newlib creates a new table and registers the functions inside it
+    luaL_newlib(L, math_ext_funcs);
+    return 1; // Tell Lua we are returning 1 thing (the table)
 }
+
+// Register the function GLOBAL
+// int luaopen_math_ext(lua_State *L) {
+//     lua_register(L, "add_in_c", l_add_numbers);
+//     return 0;
+// }

@@ -56,12 +56,13 @@ if handle then
 end
 
 -- Assuming you compiled the C code into a shared library (e.g., math_ext.so)
-require("math_ext")
+-- 'require' now returns the table we built in C
+local math_ext = require("math_ext")
 -- sudo apt install build-essential liblua5.4-dev lua5.4
 -- gcc -shared -fPIC -O2 math_ext.c -o math_ext.so -I/usr/include/lua5.4
 --fPIC: Position Independent Code. This is required for shared libraries in Linux.
 --shared: Tells the compiler to produce a shared object (.so) rather than an executable.
 
--- Call the C function just like a normal Lua function
-local result = add_in_c(10, 25)
-print(result) -- Prints 35
+-- Call the C function just like a normal Lua function, but from a table.
+local result = math_ext.add_in_c(10, 25)
+print("Result: " .. result) -- Prints 35
