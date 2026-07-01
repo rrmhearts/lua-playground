@@ -1,5 +1,6 @@
 # other files
 *.txt
+sensor_app
 
 # Compiled Lua sources
 luac.out
