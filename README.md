@@ -5,6 +5,7 @@ This is a place to learn Lua. I would call it a Luau, but unforntunately that is
 * See [extra/](./extra/) for some more basic examples
 * See [config/](./config/) for C calling a Lua config
 * See [data/](./data/) for a full example of C calling Lua Scripts/config that affect the C output.
+* See [lappis/](./lappis/) for a web application example using lapis and openresty
 
 There are no dragons here unless you don't know C or Lua.
 
