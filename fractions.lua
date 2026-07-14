@@ -1,6 +1,6 @@
 #!/bin/lua
 
-local Fraction = {}
+Fraction = {}
 Fraction.__index = Fraction
 
 local function gcd(a, b)
@@ -25,7 +25,7 @@ local function toFractions(...)
             return args
         end
     end
-    return unpack(results)
+    return table.unpack(results)
 end
 
 function Fraction.new(a, b)
@@ -97,3 +97,5 @@ print(f1 / f2)
 print(f1 * 5)
 print(f1 / 2)
 print(f1:decimal())
+
+return Fraction

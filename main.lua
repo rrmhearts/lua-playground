@@ -1,3 +1,5 @@
+#!/bin/lua5.4
+
 -- Examples of the differences
 local my_string = "Hello" .. " World" -- Concatenation
 local is_valid = true
@@ -46,6 +48,7 @@ end
 
 -- Simple execution (prints to stdout, returns status)
 os.execute("mkdir new_folder")
+os.execute("rm -rf new_folder")
 
 -- Capture output from a command (like Python's subprocess)
 local handle = io.popen("ls -la")
@@ -66,3 +69,53 @@ local math_ext = require("math_ext")
 -- Call the C function just like a normal Lua function, but from a table.
 local result = math_ext.add_in_c(10, 25)
 print("Result: " .. result) -- Prints 35
+
+
+-- Require the module once at the top of your program
+require("stdlib_ext")
+
+-- Using Math Extensions
+print(math.PHI)               --> 1.6180339887499
+print(math.gcd(48, 18))       --> 6
+print(math.round(3.14159, 2)) --> 3.14
+print(math.clamp(15, 0, 10))  --> 10
+
+-- Using String Extensions (Object-Oriented Style)
+local text = "   hello,world,lua   "
+local clean_text = text:trim()
+print("'" .. clean_text .. "'") --> 'hello,world,lua'
+
+local parts = clean_text:split(",")
+print(parts[1], parts[2])     --> hello    world
+
+print(clean_text:starts_with("hello")) --> true
+print(clean_text:ends_with("py"))     --> false
+
+-- Using Table Extensions
+local my_dict = { name = "Alice", age = 30 }
+local keys = table.keys(my_dict) -- keys = {"name", "age"}
+print(table.dump(keys))
+print(table.is_empty(my_dict))   --> false
+print(table.is_empty({}))       --> true
+
+-- 1. Create a complex table with nested data
+player = {
+    name = "Hero",
+    level = 42,
+    inventory = {
+        weapons = {"Sword", "Bow"},
+        gold = 1500
+    },
+    is_active = true
+}
+
+-- 2. Create a circular reference (player targets themselves)
+player.target = player 
+
+-- 3. Print the table contents
+print(table.dump(player))
+
+print(getGlobalName(player))
+
+frac = math.Fraction(1, 2)
+print((frac*2):decimal())
