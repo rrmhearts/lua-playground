@@ -15,8 +15,17 @@ local function toFractions(...)
     local results = {}
     for _, val in ipairs(args) do
         if type(val) == 'number' then
-            -- convert numbers to n/1
-            table.insert(results, Fraction.new(val, 1))
+            if math.type(val) == 'integer' then
+                -- convert numbers to n/1
+                table.insert(results, Fraction.new(val, 1))
+            else
+                -- convert floats to n/1
+                whole, decimal = math.modf(val)
+                local dec_digits = #string.gsub(tostring(decimal), "%.", "")
+                numerator = whole * math.pow(10, dec_digits) + decimal * math.pow(10, dec_digits)
+                num_int, _ = math.modf(numerator) -- = math.tointeger(math.floor(numerator))
+                table.insert(results, Fraction.new(num_int, math.pow(10, dec_digits)))
+            end
         elseif type(val) == "table" and getmetatable(val) == Fraction then
             -- it is already a fraction, leave it alone
             table.insert(results, val)
@@ -32,8 +41,8 @@ function Fraction.new(a, b)
     local self = setmetatable({}, Fraction)
     
     local div = gcd(a, b)
-    self.a = a / div
-    self.b = b / div
+    self.a = math.tointeger(a / div)
+    self.b = math.tointeger(b / div)
     return self
 end
 
@@ -83,6 +92,7 @@ end
 
 f1 = Fraction.new(1, 2)
 f2 = Fraction.new(2, 3)
+print(f1, f2)
 s = f1 + f2  -- call __add(f1, f2) on f1's metatable
 s = s - Fraction.new(1, 6)
 print(s, getmetatable(s))
@@ -98,4 +108,5 @@ print(f1 * 5)
 print(f1 / 2)
 print(f1:decimal())
 
+print((f1 * 1.15))
 return Fraction
