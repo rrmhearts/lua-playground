@@ -30,8 +30,8 @@ local function toFractions(...)
             -- it is already a fraction, leave it alone
             table.insert(results, val)
         else
-            print(type(val))
-            return args
+            -- print(type(val))
+            results = args
         end
     end
     return table.unpack(results)
@@ -39,11 +39,21 @@ end
 
 function Fraction.new(a, b)
     local self = setmetatable({}, Fraction)
-    
-    local div = gcd(a, b)
-    self.a = math.tointeger(a / div)
-    self.b = math.tointeger(b / div)
-    return self
+    if a == nil and b == nil then
+        self.a = 0
+        self.b = 1
+        return self
+    elseif b == nil then
+        local frac = toFractions(a)
+        self.a = frac.a
+        self.b = frac.b
+        return self
+    else
+        local div = gcd(a, b)
+        self.a = math.tointeger(a / div)
+        self.b = math.tointeger(b / div)
+        return self
+    end
 end
 
 -- make Fraction callable to do new
@@ -85,6 +95,43 @@ function Fraction.__div(f1, f2)
     return Fraction.new(a, b)
 end
 
+function Fraction.__pow(f1, number)
+    f1 = toFractions(f1)
+    local a = math.pow(f1.a, number)
+    local b = math.pow(f1.b, number)
+    return Fraction.new(a, b)
+end
+
+function Fraction.__eq(f1, f2)
+    f1, f2 = toFractions(f1, f2)
+    return f1.a == f2.a and f1.b == f2.b
+end
+
+function Fraction.__lt(f1, f2)
+    f1, f2 = toFractions(f1, f2)
+    return f1.a * f2.b < f2.a * f1.b
+end
+
+function Fraction.__le(f1, f2)
+    f1, f2 = toFractions(f1, f2)
+    return f1.a * f2.b <= f2.a * f1.b
+end
+
+function Fraction.__gt(f1, f2)
+    f1, f2 = toFractions(f1, f2)
+    return f1.a * f2.b > f2.a * f1.b
+end
+
+function Fraction.__ge(f1, f2)
+    f1, f2 = toFractions(f1, f2)
+    return f1.a * f2.b >= f2.a * f1.b
+end
+
+function Fraction.__unm(f1)
+    f1 = toFractions(f1)
+    return Fraction.new(-f1.a, f1.b)
+end
+
 function Fraction:decimal()
     -- the call requires s:decimal as well
     return self.a / self.b
@@ -108,5 +155,9 @@ print(f1 * 5)
 print(f1 / 2)
 print(f1:decimal())
 
-print((f1 * 1.15))
+print((-f1 * 1.15))
+print(f1 > Fraction(1,3))
+print(Fraction())
+print(Fraction(0.2))
+
 return Fraction

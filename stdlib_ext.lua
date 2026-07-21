@@ -17,7 +17,48 @@ end
 -- Add useful mathematical constants missing from standard Lua
 math.PHI = 1.618033988749895
 math.TAU = 6.283185307179586 -- 2 * PI
-math.Fraction = require("fractions")
+
+local success, Fraction = pcall(require, "fractions")
+if success then
+    math.Fraction = Fraction
+else
+    math.Fraction = {}
+    local fallbackMetatable = {}
+    local function safe_fallback()
+        print("Warning: Fraction module not available.")
+        return dummyFraction 
+    end
+    
+    fallbackMetatable.__index = safe_fallback
+    fallbackMetatable.__call  = safe_fallback
+    fallbackMetatable.__add   = safe_fallback
+    fallbackMetatable.__sub   = safe_fallback
+    fallbackMetatable.__mul   = safe_fallback
+    fallbackMetatable.__div   = safe_fallback
+    fallbackMetatable.__tostring = function()
+        return "[Missing Fraction]"
+    end
+    setmetatable(math.Fraction, fallbackMetatable)
+end
+
+local success, Set = pcall(require, "set")
+if success then
+    math.Set = Set
+else
+    math.Set = {}
+    local fallbackMetatable = {}
+    local function safe_fallback()
+        print("Warning: Set module not available.")
+        return dummySet 
+    end
+    
+    fallbackMetatable.__index = safe_fallback
+    fallbackMetatable.__call  = safe_fallback
+    fallbackMetatable.__tostring = function()
+        return "[Missing Set]"
+    end
+    setmetatable(math.Set, fallbackMetatable)
+end
 
 -- Greatest Common Divisor (Euclidean algorithm)
 function math.gcd(a, b)
@@ -93,6 +134,16 @@ function table.shallow_copy(t)
         target[k] = v
     end
     return target
+end
+
+-- Get the size of a table, all values
+-- #table assumes numerical keys with no holes
+function table.size(t)
+    local size = 0
+    for k, v in pairs(t) do
+        size = size + 1
+    end
+    return size
 end
 
 -- Extract all keys from a dictionary-style table
