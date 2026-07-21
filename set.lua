@@ -55,8 +55,8 @@ end
 
 -- make Set callable to do new
 setmetatable(Set, {
-    __call = function(cls, a, b)
-        return cls.new(a, b)
+    __call = function(cls, ...)
+        return cls.new(...)
     end
 })
 
@@ -100,6 +100,10 @@ function Set:length()
         count = count + 1
     end
     return count
+end
+
+function Set.__len(set)
+    return set:length()
 end
 
 function Set.__add(...)
@@ -214,8 +218,11 @@ assert(setA >= Set.new({1, 2, 3}), 'setA >= {1,2,3}')
 -- modifies setA and setB
 assert (setA:remove(1) == setB:remove(7, 4), 'true')
 
-assert (setA:length()==2, '2')
-assert (setB:length()==2, '2')
+assert (setA:length()==#setA, '2')
+assert (setB:length()==#setB, '2')
+
+newset = Set(4,5,6)
+assert (Set.new(1,2,3):length() == #newset)
 
 
 
